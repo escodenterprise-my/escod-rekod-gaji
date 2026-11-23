@@ -1,0 +1,2053 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ESCOD ENTERPRISE (IP0411860-D) — Rekod Gaji &amp; Data Staff</title>
+  <style>
+    /* =====================================================================
+       GAYA VANILLA CSS RINGKAS & STABIL UNTUK MUDAH ALIH DAN PREVIEW
+       ===================================================================== */
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      overflow-x: hidden;
+      background-color: #f1f5f9;
+      color: #0f172a;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Arial, sans-serif;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Ruang bawah yang mencukupi supaya bar navigasi bawah tidak menutup kandungan */
+    body {
+      padding-bottom: 108px;
+    }
+
+    .topbar {
+      background-color: #0f172a;
+      color: #ffffff;
+      padding: 14px 16px;
+      border-bottom: 3px solid #eab308;
+    }
+
+    .topbar-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+    }
+
+    .topbar-sub {
+      margin-top: 3px;
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 14px;
+    }
+
+    .toast {
+      display: none;
+      position: fixed;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3000;
+      width: 92%;
+      max-width: 520px;
+      background-color: #0f172a;
+      color: #ffffff;
+      border: 1.5px solid #eab308;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25);
+      text-align: center;
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    .quick-nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+    }
+
+    .quick-nav-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: #334155;
+      white-space: nowrap;
+    }
+
+    .quick-nav-select {
+      width: auto;
+      min-width: 170px;
+      max-width: 65%;
+      padding: 8px 10px;
+      border: 1px solid #94a3b8;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      background-color: #fef9c3;
+      color: #0f172a;
+      touch-action: manipulation;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .stat-card {
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    .stat-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #475569;
+    }
+
+    .stat-val {
+      margin-top: 4px;
+      font-size: 18px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .stat-val.due {
+      color: #b91c1c;
+    }
+
+    .stat-val.paid {
+      color: #15803d;
+    }
+
+    .card {
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    .card-title {
+      margin: 0 0 10px 0;
+      font-size: 15px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .form-group {
+      margin-bottom: 11px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #94a3b8;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      background-color: #ffffff;
+      color: #0f172a;
+      touch-action: manipulation;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #0f172a;
+      box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.35);
+    }
+
+    textarea {
+      min-height: 68px;
+      resize: vertical;
+    }
+
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    @media (max-width: 540px) {
+      .row-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    button,
+    a.btn-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      border: 1px solid transparent;
+      font-family: inherit;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: rgba(234, 179, 8, 0.25);
+    }
+
+    button:hover,
+    a.btn-link:hover {
+      opacity: 0.92;
+    }
+
+    .btn-primary {
+      background-color: #0f172a;
+      color: #ffffff;
+    }
+
+    .btn-gold {
+      background-color: #eab308;
+      color: #0f172a;
+    }
+
+    .btn-green {
+      background-color: #15803d;
+      color: #ffffff;
+    }
+
+    .btn-red {
+      background-color: #dc2626;
+      color: #ffffff;
+    }
+
+    .btn-light {
+      background-color: #f8fafc;
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
+
+    .btn-sm {
+      min-height: 36px;
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+
+    .info-box {
+      background-color: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-left: 4px solid #eab308;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 12.5px;
+      color: #1e293b;
+      margin-bottom: 11px;
+    }
+
+    .item-card {
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 11px 12px;
+      margin-bottom: 10px;
+      background-color: #ffffff;
+    }
+
+    .item-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .item-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .item-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .item-meta {
+      font-size: 12px;
+      color: #475569;
+      margin-top: 3px;
+    }
+
+    .item-amount {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0f172a;
+      white-space: nowrap;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .badge-due {
+      background-color: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .badge-paid {
+      background-color: #dcfce7;
+      color: #15803d;
+    }
+
+    .confirm-box {
+      display: none;
+      margin-top: 8px;
+      padding: 9px 10px;
+      background-color: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #991b1b;
+    }
+
+    .confirm-box.active {
+      display: block;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      background-color: #ffffff;
+      border-top: 1px solid #cbd5e1;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      z-index: 2500;
+      touch-action: manipulation;
+      box-shadow: 0 -2px 10px rgba(15, 23, 42, 0.08);
+    }
+
+    .nav-btn {
+      position: relative;
+      z-index: 2501;
+      min-width: 0;
+      width: 100%;
+      min-height: 54px;
+      border: none;
+      background-color: #ffffff;
+      border-radius: 0;
+      padding: 8px 3px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #475569;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      text-align: center;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: rgba(234, 179, 8, 0.25);
+      user-select: none;
+    }
+
+    .nav-btn svg {
+      flex-shrink: 0;
+      pointer-events: none;
+    }
+
+    .nav-btn span {
+      pointer-events: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 100%;
+    }
+
+    .nav-btn.active {
+      color: #0f172a;
+      background-color: #fef9c3;
+      border-top: 3px solid #eab308;
+      font-weight: 800;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 18px;
+      color: #64748b;
+      font-size: 13px;
+      border: 1px dashed #cbd5e1;
+      border-radius: 10px;
+      background-color: #f8fafc;
+    }
+
+    .script-box {
+      width: 100%;
+      min-height: 210px;
+      padding: 12px;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      background-color: #0f172a;
+      color: #f8fafc;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11.5px;
+      line-height: 1.45;
+      resize: vertical;
+    }
+
+    .sync-pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 800;
+      background-color: #e0f2fe;
+      color: #0369a1;
+      margin-top: 10px;
+    }
+
+    .photo-preview-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 8px;
+      padding: 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      background-color: #f8fafc;
+    }
+
+    .staff-avatar-lg {
+      width: 64px;
+      height: 64px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1px solid #94a3b8;
+      background-color: #e2e8f0;
+      flex-shrink: 0;
+    }
+
+    .staff-avatar-md {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1px solid #cbd5e1;
+      background-color: #e2e8f0;
+      flex-shrink: 0;
+    }
+
+    .staff-avatar-placeholder {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 800;
+      color: #475569;
+      background-color: #e2e8f0;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .photo-meta {
+      font-size: 12px;
+      color: #334155;
+      line-height: 1.35;
+    }
+
+    .photo-warn {
+      margin-top: 6px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background-color: #fffbeb;
+      border: 1px solid #fcd34d;
+      color: #92400e;
+      font-size: 12px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <!-- Notis Maklum Balas (Toast) -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Header Rasmi Syarikat -->
+  <header class="topbar">
+    <div class="container" style="padding: 0;">
+      <p class="topbar-title">ESCOD ENTERPRISE (IP0411860-D)</p>
+      <div class="topbar-sub">Sistem Rekod Gaji Harian &amp; Profil Staff • Rekod Dahulu, Bayar Kemudian</div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Pemilih Tab Pantas (Dropdown Sandaran untuk Kemudahan Tukar Halaman) -->
+    <section class="quick-nav-bar" aria-label="Pemilih Tab Pantas">
+      <label for="quick-tab-select" class="quick-nav-label" style="margin: 0;">Paparan Semasa:</label>
+      <select id="quick-tab-select" class="quick-nav-select" onchange="switchTab(this.value)">
+        <option value="panel-gaji">Rekod Gaji</option>
+        <option value="panel-staff">Data Staff</option>
+        <option value="panel-history">Sejarah</option>
+        <option value="panel-export">Sheets</option>
+      </select>
+    </section>
+
+    <!-- 4 Kad Ringkasan Dinamik -->
+    <section class="stats-grid" aria-label="Ringkasan Gaji dan Staff">
+      <div class="stat-card">
+        <div class="stat-label">Belum Dibayar (Tunggakan)</div>
+        <div id="stat-due" class="stat-val due">RM 0.00</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Sudah Dibayar</div>
+        <div id="stat-paid" class="stat-val paid">RM 0.00</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Jumlah Rekod Gaji</div>
+        <div id="stat-count" class="stat-val">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Staff Berdaftar</div>
+        <div id="stat-staff" class="stat-val">0</div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         TAB 1: REKOD GAJI HARIAN ("REKOD DAHULU, BAYAR KEMUDIAN")
+         ================================================================= -->
+    <section id="panel-gaji" class="tab-panel active" aria-label="Tab Rekod Gaji">
+      <div class="card">
+        <h2 id="wage-form-title" class="card-title">Rekod Gaji Harian Baru</h2>
+        <form id="wage-form">
+          <div class="form-group">
+            <label for="pick-staff">Pilih Staff Tersimpan (Pilihan Pantas)</label>
+            <select id="pick-staff">
+              <option value="">-- Pilih dari Data Staff atau Taip Nama Manual di Bawah --</option>
+            </select>
+          </div>
+
+          <div id="picked-staff-info" class="info-box" style="display: none;"></div>
+
+          <div class="form-group">
+            <label for="staff-name">Nama Staff (Manual / Auto-Isi) *</label>
+            <input
+              type="text"
+              id="staff-name"
+              list="staff-datalist"
+              placeholder="Taip nama staff secara manual atau pilih..."
+              required
+            />
+            <datalist id="staff-datalist"></datalist>
+          </div>
+
+          <div class="row-2">
+            <div class="form-group">
+              <label for="work-date">Tarikh Kerja / Rekod *</label>
+              <input type="date" id="work-date" required />
+            </div>
+            <div class="form-group">
+              <label for="amount-due">Jumlah Perlu Dibayar (RM) *</label>
+              <input
+                type="number"
+                id="amount-due"
+                step="0.01"
+                min="0.01"
+                placeholder="Contoh: 85.00"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div class="form-group">
+              <label for="pay-status">Status Bayaran</label>
+              <select id="pay-status">
+                <option value="Belum Dibayar">Belum Dibayar (Rekod Dahulu)</option>
+                <option value="Sudah Dibayar">Sudah Dibayar</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="work-note">Catatan Kerja / Tapak (Pilihan)</label>
+              <input type="text" id="work-note" placeholder="Contoh: Pendawaian / Aircond / Paip" />
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button type="submit" id="wage-submit-btn" class="btn-primary">Simpan Rekod Gaji</button>
+            <button type="button" id="wage-cancel-btn" class="btn-light" style="display: none;">Batal Sunting</button>
+            <button type="button" id="wage-clear-btn" class="btn-light">Kosongkan Borang</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Senarai Rekod Gaji</h2>
+        <div class="row-2" style="margin-bottom: 10px;">
+          <input type="text" id="filter-search" placeholder="Cari nama staff atau catatan..." />
+          <select id="filter-status">
+            <option value="ALL">Semua Status</option>
+            <option value="Belum Dibayar">Belum Dibayar</option>
+            <option value="Sudah Dibayar">Sudah Dibayar</option>
+          </select>
+        </div>
+        <div id="wage-list"></div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         TAB 2: DATA PROFIL STAFF & GAMBAR STAFF
+         ================================================================= -->
+    <section id="panel-staff" class="tab-panel" aria-label="Tab Data Staff">
+      <div class="card">
+        <h2 id="staff-form-title" class="card-title">Daftar / Kemaskini Profil Staff</h2>
+        <form id="staff-form">
+          <div class="row-2">
+            <div class="form-group">
+              <label for="st-name">Nama Penuh Staff *</label>
+              <input type="text" id="st-name" placeholder="Nama seperti Kad Pengenalan" required />
+            </div>
+            <div class="form-group">
+              <label for="st-ic">No. Kad Pengenalan</label>
+              <input type="text" id="st-ic" placeholder="Contoh: 900101-08-1234" />
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div class="form-group">
+              <label for="st-phone">No. Telefon</label>
+              <input type="tel" id="st-phone" placeholder="Contoh: 012-3456789" />
+            </div>
+            <div class="form-group">
+              <label for="st-bank">Nama Bank</label>
+              <input type="text" id="st-bank" placeholder="Contoh: Maybank / CIMB / Bank Islam" />
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div class="form-group">
+              <label for="st-acc">No. Akaun Bank</label>
+              <input type="text" id="st-acc" placeholder="Contoh: 158012345678" />
+            </div>
+            <div class="form-group">
+              <label for="st-addr">Alamat Kediaman</label>
+              <input type="text" id="st-addr" placeholder="Alamat penuh staff" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="st-photo">Gambar Staff (Muat Naik / Kamera — Kompres Automatik)</label>
+            <input type="file" id="st-photo" accept="image/*" capture="user" />
+            <div id="st-photo-preview-box" class="photo-preview-wrap" style="display: none;">
+              <img id="st-photo-preview-img" class="staff-avatar-lg" alt="Pratonton Gambar Staff" />
+              <div style="flex: 1; min-width: 0;">
+                <div id="st-photo-info" class="photo-meta">Tiada gambar dipilih</div>
+                <div class="btn-row" style="margin-top: 6px;">
+                  <button type="button" id="btn-remove-photo" class="btn-light btn-sm">Buang Gambar</button>
+                </div>
+              </div>
+            </div>
+            <div id="st-photo-warn" class="photo-warn" style="display: none;"></div>
+          </div>
+
+          <div class="btn-row">
+            <button type="submit" id="staff-submit-btn" class="btn-primary">Simpan Data Staff</button>
+            <button type="button" id="staff-cancel-btn" class="btn-light" style="display: none;">Batal Sunting</button>
+            <button type="button" id="staff-clear-btn" class="btn-light">Kosongkan</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Direktori Data Staff Tersimpan</h2>
+        <div id="staff-list"></div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         TAB 3: SEJARAH BAYARAN & BAKI MENGIKUT STAFF
+         ================================================================= -->
+    <section id="panel-history" class="tab-panel" aria-label="Tab Sejarah Bayaran">
+      <div class="card">
+        <h2 class="card-title">Baki Mengikut Staff</h2>
+        <div id="staff-balance-list"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Sejarah Bayaran Gaji</h2>
+        <div id="payment-history-list"></div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         TAB 4: SAMBUNGAN TERUS & EKSPORT GOOGLE SHEETS
+         ================================================================= -->
+    <section id="panel-export" class="tab-panel" aria-label="Tab Sheets">
+      <div class="card">
+        <h2 class="card-title">Sambungan Terus Google Sheet (Apps Script)</h2>
+        <div class="info-box">
+          Masukkan URL <strong>Web App Google Apps Script</strong> milik anda untuk menyimpan, memanggil (<em>pull</em>), mengedit, atau memadam rekod terus ke Google Sheet anda. Tetapan ini disimpan pada peranti anda. Nota: Had sel Google Sheets ialah sekitar 50,000 aksara—gambar staff dikompres automatik agar muat sel dengan selamat.
+        </div>
+
+        <form id="sheets-config-form">
+          <div class="form-group">
+            <label for="gs-webapp-url">URL Web App Google Apps Script *</label>
+            <input
+              type="url"
+              id="gs-webapp-url"
+              placeholder="https://script.google.com/macros/s/.../exec"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="gs-token">Token Keselamatan (Pilihan)</label>
+            <input
+              type="text"
+              id="gs-token"
+              placeholder="Kosongkan jika tidak menggunakan token"
+            />
+          </div>
+
+          <div class="btn-row">
+            <button type="submit" id="btn-save-gs-cfg" class="btn-primary">Simpan Sambungan</button>
+            <button type="button" id="btn-test-gs" class="btn-light">Uji Sambungan</button>
+            <button type="button" id="btn-pull-gs" class="btn-gold">Panggil Data dari Google Sheet</button>
+            <button type="button" id="btn-push-gs" class="btn-green">Hantar / Sync Semua ke Sheet</button>
+          </div>
+        </form>
+
+        <div id="gs-sync-status" class="sync-pill">Status: Belum diuji / Menunggu sambungan</div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Salin Data ke Papan Klip untuk Google Sheets</h2>
+        <div class="info-box">
+          Semua data disimpan secara lokal dalam pelayar peranti anda dan dihantar terus ke Google Sheet apabila sambungan Apps Script aktif. Gunakan butang di bawah untuk menyalin jadual terus ke papan klip (<em>clipboard</em>) bagi ditampal (<em>Paste</em>) di Google Sheets, atau buka helaian Google Sheets baharu.
+        </div>
+
+        <div class="btn-row">
+          <button type="button" id="btn-copy-staff-tsv" class="btn-primary">Salin Data Staff (Tampal di Sheets)</button>
+          <button type="button" id="btn-copy-wage-tsv" class="btn-primary">Salin Rekod Gaji (Tampal di Sheets)</button>
+        </div>
+
+        <div class="btn-row">
+          <a href="https://sheets.new/" target="_blank" rel="noopener noreferrer" class="btn-gold btn-link">
+            Buka Google Sheets Baharu (sheets.new)
+          </a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Kod Google Apps Script (Salin ke Extensions &gt; Apps Script)</h2>
+        <div class="info-box">
+          1. Buka Google Sheet anda &rarr; <strong>Extensions</strong> &rarr; <strong>Apps Script</strong>.<br />
+          2. Tampal kod di bawah, simpan, kemudian klik <strong>Deploy</strong> &rarr; <strong>New deployment</strong> &rarr; pilih <strong>Web app</strong> (<em>Execute as: Me</em>, <em>Who has access: Anyone</em>).<br />
+          3. Salin URL <code>/exec</code> ke ruangan di atas.
+        </div>
+        <textarea id="apps-script-code" class="script-box" readonly></textarea>
+        <div class="btn-row">
+          <button type="button" id="btn-copy-script" class="btn-primary">Salin Kod Apps Script</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Navigasi Bawah Tetap 4 Tab dengan onclick Langsung & Ikon SVG Inline -->
+  <nav class="bottom-nav" aria-label="Navigasi Utama">
+    <button type="button" id="nav-gaji" class="nav-btn active" onclick="switchTab('panel-gaji')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+      </svg>
+      <span>Rekod Gaji</span>
+    </button>
+    <button type="button" id="nav-staff" class="nav-btn" onclick="switchTab('panel-staff')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+      <span>Data Staff</span>
+    </button>
+    <button type="button" id="nav-history" class="nav-btn" onclick="switchTab('panel-history')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+      <span>Sejarah</span>
+    </button>
+    <button type="button" id="nav-export" class="nav-btn" onclick="switchTab('panel-export')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="12" y1="18" x2="12" y2="12"/>
+        <line x1="9" y1="15" x2="15" y2="15"/>
+      </svg>
+      <span>Sheets</span>
+    </button>
+  </nav>
+
+  <script>
+    /* =====================================================================
+       FUNGSI TUKAR TAB GLOBAL (DIPANGGIL TERUS OLEH ONCLICK & DROPDOWN)
+       ===================================================================== */
+    function switchTab(tabId) {
+      if (!tabId) return;
+      var targetPanel = document.getElementById(tabId);
+      if (!targetPanel) return;
+
+      var panels = document.querySelectorAll(".tab-panel");
+      for (var i = 0; i < panels.length; i++) {
+        panels[i].classList.remove("active");
+      }
+      targetPanel.classList.add("active");
+
+      var mapTabToNavId = {
+        "panel-gaji": "nav-gaji",
+        "panel-staff": "nav-staff",
+        "panel-history": "nav-history",
+        "panel-export": "nav-export"
+      };
+
+      var navBtns = document.querySelectorAll(".nav-btn");
+      for (var j = 0; j < navBtns.length; j++) {
+        navBtns[j].classList.remove("active");
+      }
+      var activeBtn = document.getElementById(mapTabToNavId[tabId]);
+      if (activeBtn) {
+        activeBtn.classList.add("active");
+      }
+
+      var quickSelect = document.getElementById("quick-tab-select");
+      if (quickSelect && quickSelect.value !== tabId) {
+        quickSelect.value = tabId;
+      }
+
+      try {
+        window.scrollTo(0, 0);
+      } catch (e) {
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }
+    }
+
+    (function () {
+      "use strict";
+
+      const STORAGE_KEYS = {
+        staff: "escod_payroll_staff_v1",
+        wages: "escod_payroll_wages_v1",
+        payments: "escod_payroll_payments_v1",
+        gsConfig: "escod_payroll_gs_config_v1"
+      };
+
+      // Had selamat aksara dalam satu sel Google Sheets (had rasmi ~50,000 aksara)
+      const GS_CELL_CHAR_LIMIT = 45000;
+
+      const APPS_SCRIPT_TEMPLATE = [
+        "const TOKEN = \"\"; // Pilihan: letak token rahsia jika mahu",
+        "",
+        "function getOrCreateSheet(ss, name, headers) {",
+        "  let sh = ss.getSheetByName(name);",
+        "  if (!sh) {",
+        "    sh = ss.insertSheet(name);",
+        "    sh.appendRow(headers);",
+        "  } else if (sh.getLastRow() === 0) {",
+        "    sh.appendRow(headers);",
+        "  }",
+        "  return sh;",
+        "}",
+        "",
+        "function readRowsAsObjects(sh) {",
+        "  const lastRow = sh.getLastRow();",
+        "  const lastCol = sh.getLastColumn();",
+        "  if (lastRow < 2 || lastCol < 1) return [];",
+        "  const headers = sh.getRange(1, 1, 1, lastCol).getValues()[0];",
+        "  const values = sh.getRange(2, 1, lastRow - 1, lastCol).getValues();",
+        "  return values.map((row) => {",
+        "    const obj = {};",
+        "    headers.forEach((h, idx) => { obj[String(h).trim()] = row[idx]; });",
+        "    return obj;",
+        "  });",
+        "}",
+        "",
+        "function upsertRowById(sh, headers, idVal, rowObj) {",
+        "  const data = sh.getDataRange().getValues();",
+        "  const idColIdx = headers.indexOf(\"id\");",
+        "  const rowArr = headers.map((h) => (rowObj[h] !== undefined ? rowObj[h] : \"\"));",
+        "  let foundRow = -1;",
+        "  if (idColIdx !== -1 && idVal) {",
+        "    for (let i = 1; i < data.length; i++) {",
+        "      if (String(data[i][idColIdx]) === String(idVal)) {",
+        "        foundRow = i + 1;",
+        "        break;",
+        "      }",
+        "    }",
+        "  }",
+        "  if (foundRow > 0) {",
+        "    sh.getRange(foundRow, 1, 1, headers.length).setValues([rowArr]);",
+        "  } else {",
+        "    sh.appendRow(rowArr);",
+        "  }",
+        "}",
+        "",
+        "function deleteRowById(sh, idVal) {",
+        "  const data = sh.getDataRange().getValues();",
+        "  if (data.length < 2 || !idVal) return;",
+        "  const idColIdx = data[0].indexOf(\"id\");",
+        "  if (idColIdx === -1) return;",
+        "  for (let i = data.length - 1; i >= 1; i--) {",
+        "    if (String(data[i][idColIdx]) === String(idVal)) {",
+        "      sh.deleteRow(i + 1);",
+        "    }",
+        "  }",
+        "}",
+        "",
+        "function ensureSheets(ss) {",
+        "  return {",
+        "    staffSh: getOrCreateSheet(ss, \"Data_Staff\", [\"id\", \"name\", \"ic\", \"phone\", \"bank\", \"account\", \"address\", \"photo\"]),",
+        "    wageSh: getOrCreateSheet(ss, \"Rekod_Gaji\", [\"id\", \"staffName\", \"date\", \"amount\", \"status\", \"note\"]),",
+        "    paySh: getOrCreateSheet(ss, \"Sejarah_Bayaran\", [\"id\", \"staffName\", \"amount\", \"paidDate\", \"note\"])",
+        "  };",
+        "}",
+        "",
+        "function doGet(e) {",
+        "  try {",
+        "    const token = (e && e.parameter && e.parameter.token) || \"\";",
+        "    if (TOKEN && token !== TOKEN) {",
+        "      return ContentService.createTextOutput(JSON.stringify({ ok: false, error: \"Token tidak sah\" })).setMimeType(ContentService.MimeType.JSON);",
+        "    }",
+        "    const ss = SpreadsheetApp.getActiveSpreadsheet();",
+        "    const { staffSh, wageSh, paySh } = ensureSheets(ss);",
+        "    const payload = {",
+        "      ok: true,",
+        "      staff: readRowsAsObjects(staffSh),",
+        "      wages: readRowsAsObjects(wageSh),",
+        "      payments: readRowsAsObjects(paySh)",
+        "    };",
+        "    return ContentService.createTextOutput(JSON.stringify(payload)).setMimeType(ContentService.MimeType.JSON);",
+        "  } catch (err) {",
+        "    return ContentService.createTextOutput(JSON.stringify({ ok: false, error: err.message })).setMimeType(ContentService.MimeType.JSON);",
+        "  }",
+        "}",
+        "",
+        "function doPost(e) {",
+        "  try {",
+        "    const raw = (e && e.postData && e.postData.contents) || \"{}\";",
+        "    const body = JSON.parse(raw);",
+        "    if (TOKEN && body.token !== TOKEN) {",
+        "      return ContentService.createTextOutput(JSON.stringify({ ok: false, error: \"Token tidak sah\" })).setMimeType(ContentService.MimeType.JSON);",
+        "    }",
+        "    const ss = SpreadsheetApp.getActiveSpreadsheet();",
+        "    const { staffSh, wageSh, paySh } = ensureSheets(ss);",
+        "    const staffH = [\"id\", \"name\", \"ic\", \"phone\", \"bank\", \"account\", \"address\", \"photo\"];",
+        "    const wageH = [\"id\", \"staffName\", \"date\", \"amount\", \"status\", \"note\"];",
+        "    const payH = [\"id\", \"staffName\", \"amount\", \"paidDate\", \"note\"];",
+        "    const action = body.action || \"upsert\";",
+        "    const entity = body.entity || \"\";",
+        "    const record = body.record || {};",
+        "",
+        "    if (action === \"delete\") {",
+        "      if (entity === \"staff\") deleteRowById(staffSh, record.id);",
+        "      if (entity === \"wage\") deleteRowById(wageSh, record.id);",
+        "      if (entity === \"payment\") deleteRowById(paySh, record.id);",
+        "    } else if (action === \"syncAll\") {",
+        "      if (Array.isArray(body.staff)) body.staff.forEach((r) => upsertRowById(staffSh, staffH, r.id, r));",
+        "      if (Array.isArray(body.wages)) body.wages.forEach((r) => upsertRowById(wageSh, wageH, r.id, r));",
+        "      if (Array.isArray(body.payments)) body.payments.forEach((r) => upsertRowById(paySh, payH, r.id, r));",
+        "    } else {",
+        "      if (entity === \"staff\") upsertRowById(staffSh, staffH, record.id, record);",
+        "      if (entity === \"wage\") upsertRowById(wageSh, wageH, record.id, record);",
+        "      if (entity === \"payment\") upsertRowById(paySh, payH, record.id, record);",
+        "    }",
+        "",
+        "    return ContentService.createTextOutput(JSON.stringify({ ok: true })).setMimeType(ContentService.MimeType.JSON);",
+        "  } catch (err) {",
+        "    return ContentService.createTextOutput(JSON.stringify({ ok: false, error: err.message })).setMimeType(ContentService.MimeType.JSON);",
+        "  }",
+        "}"
+      ].join("\n");
+
+      let staffList = [];
+      let wagesList = [];
+      let paymentHistory = [];
+      let gsConfig = { url: "", token: "" };
+      let editingWageId = null;
+      let editingStaffId = null;
+      let currentStaffPhoto = "";
+      let toastTimer = null;
+
+      function uid() {
+        return "id_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 7);
+      }
+
+      function todayISO() {
+        const d = new Date();
+        const pad = (n) => String(n).padStart(2, "0");
+        return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+      }
+
+      function formatRM(num) {
+        const n = Number(num) || 0;
+        return "RM " + n.toFixed(2);
+      }
+
+      function esc(str) {
+        return String(str || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function showToast(msg) {
+        const el = document.getElementById("toast");
+        if (!el) return;
+        el.textContent = msg;
+        el.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          el.classList.remove("show");
+        }, 2800);
+      }
+
+      function loadAll() {
+        try {
+          staffList = JSON.parse(localStorage.getItem(STORAGE_KEYS.staff) || "[]");
+          wagesList = JSON.parse(localStorage.getItem(STORAGE_KEYS.wages) || "[]");
+          paymentHistory = JSON.parse(localStorage.getItem(STORAGE_KEYS.payments) || "[]");
+          const cfg = JSON.parse(localStorage.getItem(STORAGE_KEYS.gsConfig) || "{}");
+          gsConfig = {
+            url: cfg && typeof cfg.url === "string" ? cfg.url.trim() : "",
+            token: cfg && typeof cfg.token === "string" ? cfg.token.trim() : ""
+          };
+        } catch (err) {
+          staffList = [];
+          wagesList = [];
+          paymentHistory = [];
+          gsConfig = { url: "", token: "" };
+        }
+        if (!Array.isArray(staffList)) staffList = [];
+        if (!Array.isArray(wagesList)) wagesList = [];
+        if (!Array.isArray(paymentHistory)) paymentHistory = [];
+      }
+
+      function saveAll() {
+        try {
+          localStorage.setItem(STORAGE_KEYS.staff, JSON.stringify(staffList));
+          localStorage.setItem(STORAGE_KEYS.wages, JSON.stringify(wagesList));
+          localStorage.setItem(STORAGE_KEYS.payments, JSON.stringify(paymentHistory));
+        } catch (err) {
+          showToast("Amaran: Gagal menyimpan ke storan pelayar.");
+        }
+      }
+
+      function saveGsConfig() {
+        try {
+          localStorage.setItem(STORAGE_KEYS.gsConfig, JSON.stringify(gsConfig));
+        } catch (err) {
+          showToast("Gagal menyimpan tetapan Google Sheet.");
+        }
+      }
+
+      function setSyncStatusText(text) {
+        const el = document.getElementById("gs-sync-status");
+        if (el) el.textContent = "Status: " + text;
+      }
+
+      function syncGsInputs() {
+        const urlEl = document.getElementById("gs-webapp-url");
+        const tokEl = document.getElementById("gs-token");
+        if (urlEl) urlEl.value = gsConfig.url || "";
+        if (tokEl) tokEl.value = gsConfig.token || "";
+        setSyncStatusText(gsConfig.url ? "URL Google Sheet dikonfigurasi" : "Belum dikonfigurasi");
+      }
+
+      async function postToGoogleSheet(payload) {
+        if (!gsConfig.url) return { skipped: true };
+        const body = Object.assign({ token: gsConfig.token || "" }, payload);
+        try {
+          const res = await fetch(gsConfig.url, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(body)
+          });
+          if (!res.ok) {
+            return { ok: false, error: "HTTP " + res.status };
+          }
+          const json = await res.json().catch(() => ({ ok: true }));
+          return json;
+        } catch (err) {
+          return { ok: false, error: err && err.message ? err.message : "Ralat rangkaian" };
+        }
+      }
+
+      async function pullFromGoogleSheet() {
+        if (!gsConfig.url) {
+          showToast("Sila masukkan URL Web App Google Apps Script dahulu.");
+          return;
+        }
+        setSyncStatusText("Sedang memanggil data dari Google Sheet...");
+        try {
+          const sep = gsConfig.url.indexOf("?") === -1 ? "?" : "&";
+          const endpoint =
+            gsConfig.url +
+            sep +
+            "t=" +
+            Date.now() +
+            (gsConfig.token ? "&token=" + encodeURIComponent(gsConfig.token) : "");
+          const res = await fetch(endpoint, { method: "GET" });
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          const data = await res.json();
+          if (!data || data.ok === false) {
+            throw new Error((data && data.error) || "Respon tidak sah daripada Google Sheet");
+          }
+
+          if (Array.isArray(data.staff)) {
+            staffList = data.staff
+              .map((s) => ({
+                id: String(s.id || uid()),
+                name: String(s.name || "").trim(),
+                ic: String(s.ic || "").trim(),
+                phone: String(s.phone || "").trim(),
+                bank: String(s.bank || "").trim(),
+                account: String(s.account || "").trim(),
+                address: String(s.address || "").trim(),
+                photo: String(s.photo || "").trim()
+              }))
+              .filter((s) => s.name);
+          }
+
+          if (Array.isArray(data.wages)) {
+            wagesList = data.wages
+              .map((w) => ({
+                id: String(w.id || uid()),
+                staffName: String(w.staffName || "").trim(),
+                date: String(w.date || todayISO()).slice(0, 10),
+                amount: Number(w.amount) || 0,
+                status: w.status === "Sudah Dibayar" ? "Sudah Dibayar" : "Belum Dibayar",
+                note: String(w.note || "").trim()
+              }))
+              .filter((w) => w.staffName);
+          }
+
+          if (Array.isArray(data.payments)) {
+            paymentHistory = data.payments
+              .map((p) => ({
+                id: String(p.id || uid()),
+                staffName: String(p.staffName || "").trim(),
+                amount: Number(p.amount) || 0,
+                paidDate: String(p.paidDate || todayISO()).slice(0, 10),
+                note: String(p.note || "").trim()
+              }))
+              .filter((p) => p.staffName);
+          }
+
+          saveAll();
+          renderAll();
+          setSyncStatusText("Data berjaya dipanggil dari Google Sheet");
+          showToast("Data berjaya dipanggil & dimuatkan ke aplikasi.");
+        } catch (err) {
+          setSyncStatusText("Gagal memanggil data: " + (err && err.message ? err.message : "Ralat"));
+          showToast("Gagal memanggil data. Pastikan Web App di-deploy (Anyone) & URL betul.");
+        }
+      }
+
+      async function pushAllToGoogleSheet() {
+        if (!gsConfig.url) {
+          showToast("Sila masukkan URL Web App Google Apps Script dahulu.");
+          return;
+        }
+        setSyncStatusText("Sedang menghantar semua rekod ke Google Sheet...");
+        const res = await postToGoogleSheet({
+          action: "syncAll",
+          staff: staffList,
+          wages: wagesList,
+          payments: paymentHistory
+        });
+        if (res && res.ok !== false && !res.error) {
+          setSyncStatusText("Semua rekod disegerakkan ke Google Sheet");
+          showToast("Semua data berjaya dihantar ke Google Sheet.");
+        } else {
+          setSyncStatusText("Gagal sync: " + (res && res.error ? res.error : "Semak sambungan"));
+          showToast("Gagal menghantar ke Google Sheet.");
+        }
+      }
+
+      function renderStats() {
+        let due = 0;
+        let paid = 0;
+        wagesList.forEach((w) => {
+          const amt = Number(w.amount) || 0;
+          if (w.status === "Sudah Dibayar") paid += amt;
+          else due += amt;
+        });
+
+        document.getElementById("stat-due").textContent = formatRM(due);
+        document.getElementById("stat-paid").textContent = formatRM(paid);
+        document.getElementById("stat-count").textContent = String(wagesList.length);
+        document.getElementById("stat-staff").textContent = String(staffList.length);
+      }
+
+      function updatePickedStaffInfo() {
+        const sel = document.getElementById("pick-staff");
+        const box = document.getElementById("picked-staff-info");
+        if (!sel || !box) return;
+
+        const id = sel.value;
+        if (!id) {
+          box.style.display = "none";
+          box.innerHTML = "";
+          return;
+        }
+
+        const s = staffList.find((item) => item.id === id);
+        if (!s) {
+          box.style.display = "none";
+          box.innerHTML = "";
+          return;
+        }
+
+        const avatarHtml = s.photo
+          ? '<img src="' + esc(s.photo) + '" alt="Gambar ' + esc(s.name) + '" class="staff-avatar-md" />'
+          : '<div class="staff-avatar-md staff-avatar-placeholder">TIADA<br>GAMBAR</div>';
+
+        box.style.display = "block";
+        box.innerHTML =
+          '<div style="display:flex;align-items:flex-start;gap:10px;">' +
+            avatarHtml +
+            '<div style="flex:1;min-width:0;">' +
+              "<strong>Profil Staff:</strong> " + esc(s.name) +
+              "<br><strong>No. KP:</strong> " + esc(s.ic || "-") +
+              " • <strong>No. Telefon:</strong> " + esc(s.phone || "-") +
+              "<br><strong>Bank:</strong> " + esc(s.bank || "-") +
+              " • <strong>No. Akaun:</strong> " + esc(s.account || "-") +
+              "<br><strong>Alamat:</strong> " + esc(s.address || "-") +
+            "</div>" +
+          "</div>";
+      }
+
+      function renderStaffSelectors() {
+        const sel = document.getElementById("pick-staff");
+        const dl = document.getElementById("staff-datalist");
+        if (!sel || !dl) return;
+
+        const prevVal = sel.value;
+        sel.innerHTML = '<option value="">-- Pilih dari Data Staff atau Taip Nama Manual di Bawah --</option>';
+        dl.innerHTML = "";
+
+        staffList.forEach((s) => {
+          const opt = document.createElement("option");
+          opt.value = s.id;
+          opt.textContent = s.name + (s.phone ? " (" + s.phone + ")" : "");
+          sel.appendChild(opt);
+
+          const dop = document.createElement("option");
+          dop.value = s.name;
+          dl.appendChild(dop);
+        });
+
+        if (prevVal && staffList.some((s) => s.id === prevVal)) {
+          sel.value = prevVal;
+        }
+        updatePickedStaffInfo();
+      }
+
+      function renderWages() {
+        const searchEl = document.getElementById("filter-search");
+        const statusEl = document.getElementById("filter-status");
+        const listEl = document.getElementById("wage-list");
+        if (!searchEl || !statusEl || !listEl) return;
+
+        const q = searchEl.value.trim().toLowerCase();
+        const st = statusEl.value;
+
+        const filtered = wagesList.filter((w) => {
+          const matchStatus = st === "ALL" || w.status === st;
+          const hay = ((w.staffName || "") + " " + (w.note || "") + " " + (w.date || "")).toLowerCase();
+          const matchQuery = !q || hay.includes(q);
+          return matchStatus && matchQuery;
+        });
+
+        if (!filtered.length) {
+          listEl.innerHTML = '<div class="empty">Tiada rekod gaji ditemui.</div>';
+          return;
+        }
+
+        listEl.innerHTML = filtered
+          .map((w) => {
+            const isPaid = w.status === "Sudah Dibayar";
+            return (
+              '<div class="item-card">' +
+                '<div class="item-head">' +
+                  "<div>" +
+                    '<div class="item-name">' + esc(w.staffName) +
+                      '<span class="badge ' + (isPaid ? "badge-paid" : "badge-due") + '">' + esc(w.status) + "</span>" +
+                    "</div>" +
+                    '<div class="item-meta">Tarikh: ' + esc(w.date || "-") + (w.note ? " • Catatan: " + esc(w.note) : "") + "</div>" +
+                  "</div>" +
+                  '<div class="item-amount">' + formatRM(w.amount) + "</div>" +
+                "</div>" +
+                '<div class="btn-row">' +
+                  (!isPaid
+                    ? '<button type="button" class="btn-green btn-sm act-pay-wage" data-id="' + esc(w.id) + '">Tandakan Sudah Dibayar</button>'
+                    : '<button type="button" class="btn-light btn-sm act-unpay-wage" data-id="' + esc(w.id) + '">Jadikan Belum Dibayar</button>') +
+                  '<button type="button" class="btn-light btn-sm act-edit-wage" data-id="' + esc(w.id) + '">Sunting</button>' +
+                  '<button type="button" class="btn-red btn-sm act-ask-del-wage" data-id="' + esc(w.id) + '">Padam</button>' +
+                "</div>" +
+                '<div class="confirm-box" id="conf-wage-' + esc(w.id) + '">' +
+                  "Pasti mahu memadam rekod gaji ini?" +
+                  '<div class="btn-row" style="margin-top: 6px;">' +
+                    '<button type="button" class="btn-red btn-sm act-confirm-del-wage" data-id="' + esc(w.id) + '">Ya, Padam</button>' +
+                    '<button type="button" class="btn-light btn-sm act-cancel-del" data-target="conf-wage-' + esc(w.id) + '">Batal</button>' +
+                  "</div>" +
+                "</div>" +
+              "</div>"
+            );
+          })
+          .join("");
+      }
+
+      function renderStaffList() {
+        const el = document.getElementById("staff-list");
+        if (!el) return;
+
+        if (!staffList.length) {
+          el.innerHTML = '<div class="empty">Belum ada profil staff disimpan. Isi borang di atas untuk menambah staff.</div>';
+          return;
+        }
+
+        el.innerHTML = staffList
+          .map((s) => {
+            const avatarHtml = s.photo
+              ? '<img src="' + esc(s.photo) + '" alt="Gambar ' + esc(s.name) + '" class="staff-avatar-md" />'
+              : '<div class="staff-avatar-md staff-avatar-placeholder">TIADA<br>GAMBAR</div>';
+
+            return (
+              '<div class="item-card">' +
+                '<div class="item-head">' +
+                  '<div style="display:flex;align-items:flex-start;gap:10px;">' +
+                    avatarHtml +
+                    '<div style="min-width:0;">' +
+                      '<div class="item-name">' + esc(s.name) + "</div>" +
+                      '<div class="item-meta">No. KP: ' + esc(s.ic || "-") + " • No. Telefon: " + esc(s.phone || "-") + "</div>" +
+                      '<div class="item-meta">Bank: ' + esc(s.bank || "-") + " • No. Akaun: " + esc(s.account || "-") + "</div>" +
+                      '<div class="item-meta">Alamat: ' + esc(s.address || "-") + "</div>" +
+                    "</div>" +
+                  "</div>" +
+                "</div>" +
+                '<div class="btn-row">' +
+                  '<button type="button" class="btn-gold btn-sm act-use-staff" data-id="' + esc(s.id) + '">Rekod Gaji Staff</button>' +
+                  '<button type="button" class="btn-light btn-sm act-edit-staff" data-id="' + esc(s.id) + '">Sunting</button>' +
+                  '<button type="button" class="btn-red btn-sm act-ask-del-staff" data-id="' + esc(s.id) + '">Padam</button>' +
+                "</div>" +
+                '<div class="confirm-box" id="conf-staff-' + esc(s.id) + '">' +
+                  "Padam profil staff <strong>" + esc(s.name) + "</strong>?" +
+                  '<div class="btn-row" style="margin-top: 6px;">' +
+                    '<button type="button" class="btn-red btn-sm act-confirm-del-staff" data-id="' + esc(s.id) + '">Ya, Padam</button>' +
+                    '<button type="button" class="btn-light btn-sm act-cancel-del" data-target="conf-staff-' + esc(s.id) + '">Batal</button>' +
+                  "</div>" +
+                "</div>" +
+              "</div>"
+            );
+          })
+          .join("");
+      }
+
+      function renderBalancesAndHistory() {
+        const balEl = document.getElementById("staff-balance-list");
+        const histEl = document.getElementById("payment-history-list");
+        if (!balEl || !histEl) return;
+
+        const map = new Map();
+        staffList.forEach((s) => {
+          map.set(s.name.trim().toLowerCase(), {
+            name: s.name,
+            due: 0,
+            paid: 0
+          });
+        });
+
+        wagesList.forEach((w) => {
+          const clean = (w.staffName || "").trim();
+          if (!clean) return;
+          const key = clean.toLowerCase();
+          if (!map.has(key)) {
+            map.set(key, { name: clean, due: 0, paid: 0 });
+          }
+          const entry = map.get(key);
+          const amt = Number(w.amount) || 0;
+          if (w.status === "Sudah Dibayar") entry.paid += amt;
+          else entry.due += amt;
+        });
+
+        const rows = Array.from(map.values());
+        if (!rows.length) {
+          balEl.innerHTML = '<div class="empty">Tiada baki staff untuk dipaparkan.</div>';
+        } else {
+          balEl.innerHTML = rows
+            .map((r) => {
+              return (
+                '<div class="item-card">' +
+                  '<div class="item-head">' +
+                    "<div>" +
+                      '<div class="item-name">' + esc(r.name) + "</div>" +
+                      '<div class="item-meta">Sudah Dibayar: ' + formatRM(r.paid) + "</div>" +
+                    "</div>" +
+                    '<div style="text-align: right;">' +
+                      '<div class="stat-label">Belum Dibayar</div>' +
+                      '<div class="item-amount" style="color: #b91c1c;">' + formatRM(r.due) + "</div>" +
+                    "</div>" +
+                  "</div>" +
+                "</div>"
+              );
+            })
+            .join("");
+        }
+
+        if (!paymentHistory.length) {
+          histEl.innerHTML = '<div class="empty">Belum ada rekod bayaran direkodkan.</div>';
+        } else {
+          histEl.innerHTML = paymentHistory
+            .map((p) => {
+              return (
+                '<div class="item-card">' +
+                  '<div class="item-head">' +
+                    "<div>" +
+                      '<div class="item-name">' + esc(p.staffName) + ' <span class="badge badge-paid">Dibayar</span></div>' +
+                      '<div class="item-meta">Tarikh Bayar: ' + esc(p.paidDate || "-") + (p.note ? " • " + esc(p.note) : "") + "</div>" +
+                    "</div>" +
+                    '<div class="item-amount" style="color: #15803d;">' + formatRM(p.amount) + "</div>" +
+                  "</div>" +
+                "</div>"
+              );
+            })
+            .join("");
+        }
+      }
+
+      function renderAll() {
+        renderStats();
+        renderStaffSelectors();
+        renderWages();
+        renderStaffList();
+        renderBalancesAndHistory();
+      }
+
+      function resetWageForm() {
+        editingWageId = null;
+        document.getElementById("wage-form-title").textContent = "Rekod Gaji Harian Baru";
+        document.getElementById("wage-submit-btn").textContent = "Simpan Rekod Gaji";
+        document.getElementById("wage-cancel-btn").style.display = "none";
+        document.getElementById("pick-staff").value = "";
+        updatePickedStaffInfo();
+        document.getElementById("staff-name").value = "";
+        document.getElementById("work-date").value = todayISO();
+        document.getElementById("amount-due").value = "";
+        document.getElementById("pay-status").value = "Belum Dibayar";
+        document.getElementById("work-note").value = "";
+      }
+
+      function updatePhotoPreviewUI(dataUrl, labelNote) {
+        const box = document.getElementById("st-photo-preview-box");
+        const img = document.getElementById("st-photo-preview-img");
+        const info = document.getElementById("st-photo-info");
+        const warn = document.getElementById("st-photo-warn");
+        if (!box || !img || !info || !warn) return;
+
+        if (!dataUrl) {
+          box.style.display = "none";
+          img.removeAttribute("src");
+          info.textContent = "Tiada gambar dipilih";
+          warn.style.display = "none";
+          warn.textContent = "";
+          return;
+        }
+
+        box.style.display = "flex";
+        img.src = dataUrl;
+        const approxKB = Math.round((dataUrl.length * 3) / 4 / 1024);
+        info.textContent =
+          (labelNote ? labelNote + " • " : "") +
+          "Anggaran saiz: ~" +
+          approxKB +
+          " KB (" +
+          dataUrl.length.toLocaleString() +
+          " aksara)";
+
+        if (dataUrl.length > GS_CELL_CHAR_LIMIT) {
+          warn.style.display = "block";
+          warn.textContent =
+            "Amaran Saiz Google Sheets: Data gambar (" +
+            dataUrl.length.toLocaleString() +
+            " aksara) melebihi had selamat sel Google Sheets (~" +
+            GS_CELL_CHAR_LIMIT.toLocaleString() +
+            " aksara). Gambar tetap disimpan pada peranti, tetapi mungkin terpotong atau gagal apabila disegerakkan ke sel Google Sheet.";
+        } else {
+          warn.style.display = "none";
+          warn.textContent = "";
+        }
+      }
+
+      function compressImageFileToDataURL(file, callback) {
+        if (!file) return callback("");
+        const reader = new FileReader();
+        reader.onload = function (ev) {
+          const img = new Image();
+          img.onload = function () {
+            const maxDim = 360;
+            let w = img.width || maxDim;
+            let h = img.height || maxDim;
+            if (w > h && w > maxDim) {
+              h = Math.round((h * maxDim) / w);
+              w = maxDim;
+            } else if (h >= w && h > maxDim) {
+              w = Math.round((w * maxDim) / h);
+              h = maxDim;
+            }
+            const canvas = document.createElement("canvas");
+            canvas.width = Math.max(1, w);
+            canvas.height = Math.max(1, h);
+            const ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            let out = canvas.toDataURL("image/jpeg", 0.72);
+            if (out.length > GS_CELL_CHAR_LIMIT) {
+              out = canvas.toDataURL("image/jpeg", 0.5);
+            }
+            callback(out);
+          };
+          img.onerror = function () {
+            callback("");
+          };
+          img.src = ev.target.result;
+        };
+        reader.onerror = function () {
+          callback("");
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function resetStaffForm() {
+        editingStaffId = null;
+        currentStaffPhoto = "";
+        document.getElementById("staff-form-title").textContent = "Daftar / Kemaskini Profil Staff";
+        document.getElementById("staff-submit-btn").textContent = "Simpan Data Staff";
+        document.getElementById("staff-cancel-btn").style.display = "none";
+        document.getElementById("st-name").value = "";
+        document.getElementById("st-ic").value = "";
+        document.getElementById("st-phone").value = "";
+        document.getElementById("st-bank").value = "";
+        document.getElementById("st-acc").value = "";
+        document.getElementById("st-addr").value = "";
+        const fileInp = document.getElementById("st-photo");
+        if (fileInp) fileInp.value = "";
+        updatePhotoPreviewUI("", "");
+      }
+
+      function fallbackCopy(text, label) {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        let ok = false;
+        try {
+          ok = document.execCommand("copy");
+        } catch (err) {
+          ok = false;
+        }
+        document.body.removeChild(ta);
+        if (ok) {
+          showToast(label + " disalin. Tampal (Paste) di Google Sheets.");
+        } else {
+          showToast("Gagal menyalin ke papan klip.");
+        }
+      }
+
+      function copyTSV(headers, rows, label) {
+        const tsv = [headers.join("\t")]
+          .concat(
+            rows.map((r) =>
+              r.map((c) => String(c == null ? "" : c).replace(/\t|\r?\n/g, " ")).join("\t")
+            )
+          )
+          .join("\n");
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(tsv).then(
+            () => showToast(label + " disalin. Tampal (Paste) di Google Sheets."),
+            () => fallbackCopy(tsv, label)
+          );
+        } else {
+          fallbackCopy(tsv, label);
+        }
+      }
+
+      function getStaffExportRows() {
+        const h = [
+          "Nama Staff",
+          "No. Kad Pengenalan",
+          "No. Telefon",
+          "Nama Bank",
+          "No. Akaun Bank",
+          "Alamat",
+          "Gambar (Data URL)"
+        ];
+        const r = staffList.map((s) => [s.name, s.ic, s.phone, s.bank, s.account, s.address, s.photo || ""]);
+        return { h, r };
+      }
+
+      function getWageExportRows() {
+        const h = ["Nama Staff", "Tarikh Kerja", "Jumlah (RM)", "Status Bayaran", "Catatan"];
+        const r = wagesList.map((w) => [
+          w.staffName,
+          w.date,
+          Number(w.amount || 0).toFixed(2),
+          w.status,
+          w.note
+        ]);
+        return { h, r };
+      }
+
+      // Pilihan Pantas Staff dalam Borang Rekod Gaji
+      document.getElementById("pick-staff").addEventListener("change", function () {
+        const chosen = staffList.find((item) => item.id === this.value);
+        if (chosen) {
+          document.getElementById("staff-name").value = chosen.name;
+        }
+        updatePickedStaffInfo();
+      });
+
+      // Hantar / Kemaskini Rekod Gaji
+      document.getElementById("wage-form").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const staffName = document.getElementById("staff-name").value.trim();
+        const date = document.getElementById("work-date").value;
+        const amount = parseFloat(document.getElementById("amount-due").value);
+        const status = document.getElementById("pay-status").value;
+        const note = document.getElementById("work-note").value.trim();
+
+        if (!staffName || !date || isNaN(amount) || amount <= 0) {
+          showToast("Sila isi nama staff, tarikh, dan jumlah yang sah.");
+          return;
+        }
+
+        let targetWage = null;
+        let newPayment = null;
+
+        if (editingWageId) {
+          const idx = wagesList.findIndex((w) => w.id === editingWageId);
+          if (idx !== -1) {
+            const prev = wagesList[idx];
+            targetWage = {
+              id: prev.id,
+              staffName,
+              date,
+              amount,
+              status,
+              note
+            };
+            wagesList[idx] = targetWage;
+            if (prev.status !== "Sudah Dibayar" && status === "Sudah Dibayar") {
+              newPayment = {
+                id: uid(),
+                staffName,
+                amount,
+                paidDate: todayISO(),
+                note: note || ("Bayaran rekod tarikh " + date)
+              };
+              paymentHistory.unshift(newPayment);
+            }
+            showToast("Rekod gaji berjaya dikemaskini.");
+          }
+          resetWageForm();
+        } else {
+          targetWage = {
+            id: uid(),
+            staffName,
+            date,
+            amount,
+            status,
+            note
+          };
+          wagesList.unshift(targetWage);
+          if (status === "Sudah Dibayar") {
+            newPayment = {
+              id: uid(),
+              staffName,
+              amount,
+              paidDate: todayISO(),
+              note: note || ("Bayaran rekod tarikh " + date)
+            };
+            paymentHistory.unshift(newPayment);
+          }
+          showToast("Rekod gaji berjaya disimpan.");
+          resetWageForm();
+        }
+
+        saveAll();
+        renderAll();
+
+        if (gsConfig.url && targetWage) {
+          const syncRes = await postToGoogleSheet({ action: "upsert", entity: "wage", record: targetWage });
+          if (newPayment) {
+            await postToGoogleSheet({ action: "upsert", entity: "payment", record: newPayment });
+          }
+          setSyncStatusText(
+            syncRes && syncRes.ok !== false
+              ? "Rekod gaji dihantar ke Google Sheet"
+              : "Disimpan lokal (semak sambungan Sheet)"
+          );
+        }
+      });
+
+      document.getElementById("wage-cancel-btn").addEventListener("click", resetWageForm);
+      document.getElementById("wage-clear-btn").addEventListener("click", resetWageForm);
+
+      document.getElementById("filter-search").addEventListener("input", renderWages);
+      document.getElementById("filter-status").addEventListener("change", renderWages);
+
+      // Muat naik / tangkap gambar staff & kompres automatik
+      document.getElementById("st-photo").addEventListener("change", function () {
+        const file = this.files && this.files[0];
+        if (!file) return;
+        compressImageFileToDataURL(file, function (compressedUrl) {
+          if (!compressedUrl) {
+            showToast("Gagal memproses gambar. Sila cuba gambar lain.");
+            return;
+          }
+          currentStaffPhoto = compressedUrl;
+          updatePhotoPreviewUI(currentStaffPhoto, file.name || "Gambar Staff");
+          showToast("Gambar staff dikompres & sedia disimpan.");
+        });
+      });
+
+      // Buang gambar pada borang staff
+      document.getElementById("btn-remove-photo").addEventListener("click", function () {
+        currentStaffPhoto = "";
+        const fileInp = document.getElementById("st-photo");
+        if (fileInp) fileInp.value = "";
+        updatePhotoPreviewUI("", "");
+        showToast("Gambar staff dibuang daripada borang.");
+      });
+
+      // Simpan / Kemaskini Profil Staff
+      document.getElementById("staff-form").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const name = document.getElementById("st-name").value.trim();
+        const ic = document.getElementById("st-ic").value.trim();
+        const phone = document.getElementById("st-phone").value.trim();
+        const bank = document.getElementById("st-bank").value.trim();
+        const account = document.getElementById("st-acc").value.trim();
+        const address = document.getElementById("st-addr").value.trim();
+        const photo = currentStaffPhoto || "";
+
+        if (!name) {
+          showToast("Sila masukkan nama penuh staff.");
+          return;
+        }
+
+        if (photo.length > GS_CELL_CHAR_LIMIT && gsConfig.url) {
+          showToast("Amaran: Saiz gambar besar untuk sel Google Sheet. Semak notis amaran.");
+        }
+
+        let targetStaff = null;
+
+        if (editingStaffId) {
+          const idx = staffList.findIndex((s) => s.id === editingStaffId);
+          if (idx !== -1) {
+            targetStaff = { id: editingStaffId, name, ic, phone, bank, account, address, photo };
+            staffList[idx] = targetStaff;
+            showToast("Profil staff dikemaskini.");
+          }
+          resetStaffForm();
+        } else {
+          targetStaff = { id: uid(), name, ic, phone, bank, account, address, photo };
+          staffList.unshift(targetStaff);
+          showToast("Profil staff berjaya disimpan.");
+          resetStaffForm();
+        }
+
+        saveAll();
+        renderAll();
+
+        if (gsConfig.url && targetStaff) {
+          const syncRes = await postToGoogleSheet({ action: "upsert", entity: "staff", record: targetStaff });
+          setSyncStatusText(
+            syncRes && syncRes.ok !== false
+              ? "Profil staff dihantar ke Google Sheet"
+              : "Disimpan lokal (semak sambungan Sheet)"
+          );
+        }
+      });
+
+      document.getElementById("staff-cancel-btn").addEventListener("click", resetStaffForm);
+      document.getElementById("staff-clear-btn").addEventListener("click", resetStaffForm);
+
+      // Delegasi Butang Tindakan pada Kad Rekod & Staff
+      document.addEventListener("click", async function (e) {
+        const btn = e.target.closest("button");
+        if (!btn) return;
+        const id = btn.getAttribute("data-id");
+
+        if (btn.classList.contains("act-pay-wage")) {
+          const w = wagesList.find((item) => item.id === id);
+          if (w && w.status !== "Sudah Dibayar") {
+            w.status = "Sudah Dibayar";
+            const payRec = {
+              id: uid(),
+              staffName: w.staffName,
+              amount: Number(w.amount) || 0,
+              paidDate: todayISO(),
+              note: w.note || ("Bayaran rekod tarikh " + w.date)
+            };
+            paymentHistory.unshift(payRec);
+            saveAll();
+            renderAll();
+            showToast("Gaji " + w.staffName + " ditandakan Sudah Dibayar.");
+            if (gsConfig.url) {
+              await postToGoogleSheet({ action: "upsert", entity: "wage", record: w });
+              await postToGoogleSheet({ action: "upsert", entity: "payment", record: payRec });
+              setSyncStatusText("Status bayaran dikemaskini ke Google Sheet");
+            }
+          }
+        } else if (btn.classList.contains("act-unpay-wage")) {
+          const w = wagesList.find((item) => item.id === id);
+          if (w) {
+            w.status = "Belum Dibayar";
+            saveAll();
+            renderAll();
+            showToast("Status rekod dikembalikan ke Belum Dibayar.");
+            if (gsConfig.url) {
+              await postToGoogleSheet({ action: "upsert", entity: "wage", record: w });
+              setSyncStatusText("Status rekod dikemaskini ke Google Sheet");
+            }
+          }
+        } else if (btn.classList.contains("act-edit-wage")) {
+          const w = wagesList.find((item) => item.id === id);
+          if (w) {
+            editingWageId = w.id;
+            document.getElementById("wage-form-title").textContent = "Sunting Rekod Gaji";
+            document.getElementById("wage-submit-btn").textContent = "Kemaskini Rekod";
+            document.getElementById("wage-cancel-btn").style.display = "inline-flex";
+            document.getElementById("pick-staff").value = "";
+            updatePickedStaffInfo();
+            document.getElementById("staff-name").value = w.staffName || "";
+            document.getElementById("work-date").value = w.date || todayISO();
+            document.getElementById("amount-due").value = w.amount || "";
+            document.getElementById("pay-status").value = w.status || "Belum Dibayar";
+            document.getElementById("work-note").value = w.note || "";
+            switchTab("panel-gaji");
+          }
+        } else if (btn.classList.contains("act-ask-del-wage")) {
+          const box = document.getElementById("conf-wage-" + id);
+          if (box) box.classList.add("active");
+        } else if (btn.classList.contains("act-confirm-del-wage")) {
+          wagesList = wagesList.filter((item) => item.id !== id);
+          if (editingWageId === id) resetWageForm();
+          saveAll();
+          renderAll();
+          showToast("Rekod gaji telah dipadam.");
+          if (gsConfig.url && id) {
+            await postToGoogleSheet({ action: "delete", entity: "wage", record: { id } });
+            setSyncStatusText("Rekod gaji dipadam di Google Sheet");
+          }
+        } else if (btn.classList.contains("act-use-staff")) {
+          const s = staffList.find((item) => item.id === id);
+          if (s) {
+            resetWageForm();
+            document.getElementById("pick-staff").value = s.id;
+            document.getElementById("staff-name").value = s.name;
+            updatePickedStaffInfo();
+            switchTab("panel-gaji");
+          }
+        } else if (btn.classList.contains("act-edit-staff")) {
+          const s = staffList.find((item) => item.id === id);
+          if (s) {
+            editingStaffId = s.id;
+            currentStaffPhoto = s.photo || "";
+            document.getElementById("staff-form-title").textContent = "Sunting Profil Staff";
+            document.getElementById("staff-submit-btn").textContent = "Kemaskini Staff";
+            document.getElementById("staff-cancel-btn").style.display = "inline-flex";
+            document.getElementById("st-name").value = s.name || "";
+            document.getElementById("st-ic").value = s.ic || "";
+            document.getElementById("st-phone").value = s.phone || "";
+            document.getElementById("st-bank").value = s.bank || "";
+            document.getElementById("st-acc").value = s.account || "";
+            document.getElementById("st-addr").value = s.address || "";
+            const fileInp = document.getElementById("st-photo");
+            if (fileInp) fileInp.value = "";
+            updatePhotoPreviewUI(currentStaffPhoto, currentStaffPhoto ? "Gambar Tersimpan" : "");
+            switchTab("panel-staff");
+          }
+        } else if (btn.classList.contains("act-ask-del-staff")) {
+          const box = document.getElementById("conf-staff-" + id);
+          if (box) box.classList.add("active");
+        } else if (btn.classList.contains("act-confirm-del-staff")) {
+          staffList = staffList.filter((item) => item.id !== id);
+          if (editingStaffId === id) resetStaffForm();
+          saveAll();
+          renderAll();
+          showToast("Profil staff telah dipadam.");
+          if (gsConfig.url && id) {
+            await postToGoogleSheet({ action: "delete", entity: "staff", record: { id } });
+            setSyncStatusText("Profil staff dipadam di Google Sheet");
+          }
+        } else if (btn.classList.contains("act-cancel-del")) {
+          const targetId = btn.getAttribute("data-target");
+          const box = targetId ? document.getElementById(targetId) : null;
+          if (box) box.classList.remove("active");
+        }
+      });
+
+      // Tetapan & Aksi Sambungan Google Sheet
+      document.getElementById("sheets-config-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const url = document.getElementById("gs-webapp-url").value.trim();
+        const token = document.getElementById("gs-token").value.trim();
+        gsConfig = { url, token };
+        saveGsConfig();
+        setSyncStatusText(url ? "Sambungan disimpan" : "URL dikosongkan");
+        showToast(url ? "URL Google Sheet disimpan pada peranti." : "URL Google Sheet dikosongkan.");
+      });
+
+      document.getElementById("btn-test-gs").addEventListener("click", async function () {
+        const url = document.getElementById("gs-webapp-url").value.trim();
+        const token = document.getElementById("gs-token").value.trim();
+        if (!url) {
+          showToast("Sila masukkan URL Web App dahulu.");
+          return;
+        }
+        gsConfig = { url, token };
+        saveGsConfig();
+        setSyncStatusText("Menguji sambungan...");
+        try {
+          const sep = url.indexOf("?") === -1 ? "?" : "&";
+          const res = await fetch(
+            url + sep + "t=" + Date.now() + (token ? "&token=" + encodeURIComponent(token) : "")
+          );
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          const data = await res.json();
+          if (data && data.ok !== false) {
+            setSyncStatusText("Sambungan berjaya (Web App aktif)");
+            showToast("Sambungan ke Google Sheet berjaya!");
+          } else {
+            throw new Error((data && data.error) || "Respon tidak sah");
+          }
+        } catch (err) {
+          setSyncStatusText("Ujian gagal: " + (err && err.message ? err.message : "Semak URL & akses"));
+          showToast("Ujian sambungan gagal. Semak deployment Web App.");
+        }
+      });
+
+      document.getElementById("btn-pull-gs").addEventListener("click", async function () {
+        const url = document.getElementById("gs-webapp-url").value.trim();
+        const token = document.getElementById("gs-token").value.trim();
+        if (url) {
+          gsConfig = { url, token };
+          saveGsConfig();
+        }
+        await pullFromGoogleSheet();
+      });
+
+      document.getElementById("btn-push-gs").addEventListener("click", async function () {
+        const url = document.getElementById("gs-webapp-url").value.trim();
+        const token = document.getElementById("gs-token").value.trim();
+        if (url) {
+          gsConfig = { url, token };
+          saveGsConfig();
+        }
+        await pushAllToGoogleSheet();
+      });
+
+      const scriptArea = document.getElementById("apps-script-code");
+      if (scriptArea) scriptArea.value = APPS_SCRIPT_TEMPLATE;
+
+      document.getElementById("btn-copy-script").addEventListener("click", function () {
+        fallbackCopy(APPS_SCRIPT_TEMPLATE, "Kod Google Apps Script");
+      });
+
+      // Butang Salin ke Papan Klip untuk Google Sheets (tiada muat turun CSV manual)
+      document.getElementById("btn-copy-staff-tsv").addEventListener("click", function () {
+        const data = getStaffExportRows();
+        copyTSV(data.h, data.r, "Data Staff");
+      });
+
+      document.getElementById("btn-copy-wage-tsv").addEventListener("click", function () {
+        const data = getWageExportRows();
+        copyTSV(data.h, data.r, "Rekod Gaji");
+      });
+
+      // Permulaan Aplikasi
+      loadAll();
+      syncGsInputs();
+      document.getElementById("work-date").value = todayISO();
+      renderAll();
+      switchTab("panel-gaji");
+    })();
+  </script>
+</body>
+</html>
